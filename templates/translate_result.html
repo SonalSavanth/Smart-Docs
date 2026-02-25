@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Translation Result - Smart Document Manager{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+    <a href="{{ url_for('view_document', doc_id=document.id) }}" style="display: inline-flex; align-items: center; gap: 0.5rem; color: white; text-decoration: none; margin-bottom: 1rem; padding: 0.5rem 1rem; background: rgba(255, 255, 255, 0.2); border-radius: 8px;">
+        ← Back to Document
+    </a>
+
+    <div class="card">
+        <div class="card-header">
+            <h2>🌍 Translation Result</h2>
+        </div>
+        <div class="card-body">
+            <div style="margin-bottom: 1.5rem;">
+                <p style="font-size: 0.9rem; color: var(--text-light);">Original Document:</p>
+                <h3 style="color: var(--dark);">{{ document.title }}</h3>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.5rem;">Translated to:</p>
+                <p style="font-size: 1.2rem; font-weight: 600; color: var(--primary);">{{ target_language }}</p>
+            </div>
+
+            <div style="background: var(--light); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; line-height: 1.8;">
+                {{ translated_text }}
+            </div>
+
+            <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                <a href="{{ url_for('translate_document', doc_id=document.id) }}" class="btn btn-secondary">
+                    🔄 Translate Again
+                </a>
+                <a href="{{ url_for('view_document', doc_id=document.id) }}" class="btn btn-primary">
+                    ✓ Done
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

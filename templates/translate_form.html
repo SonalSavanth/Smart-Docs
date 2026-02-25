@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Translate {{ document.title }} - Smart Document Manager{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <a href="{{ url_for('view_document', doc_id=document.id) }}" style="display: inline-flex; align-items: center; gap: 0.5rem; color: white; text-decoration: none; margin-bottom: 1rem; padding: 0.5rem 1rem; background: rgba(255, 255, 255, 0.2); border-radius: 8px;">
+        ← Back
+    </a>
+
+    <div class="card">
+        <div class="card-header">
+            <h2>🌍 Translate Document</h2>
+        </div>
+        <div class="card-body">
+            <h3 style="margin-bottom: 1rem;">{{ document.title }}</h3>
+            
+            <form action="{{ url_for('translate_document', doc_id=document.id) }}" method="POST">
+                <div style="margin-bottom: 1rem;">
+                    <label for="target_language" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Select Target Language:</label>
+                    <select name="target_language" id="target_language" class="form-control" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem;">
+                        <option value="">Choose a language...</option>
+                        <option value="Spanish">Spanish</option>
+                        <option value="French">French</option>
+                        <option value="German">German</option>
+                        <option value="Italian">Italian</option>
+                        <option value="Portuguese">Portuguese</option>
+                        <option value="Chinese">Chinese</option>
+                        <option value="Japanese">Japanese</option>
+                        <option value="Korean">Korean</option>
+                        <option value="Arabic">Arabic</option>
+                        <option value="Hindi">Hindi</option>
+                        <option value="Russian">Russian</option>
+                    </select>
+                </div>
+
+                <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 1rem;">
+                    ℹ️ Note: Only the first 5000 characters will be translated to avoid excessive API usage.
+                </p>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    🌍 Translate Document
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

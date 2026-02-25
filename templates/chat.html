@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}Chat - Smart Document Manager{% endblock %}
+
+{% block extra_css %}
+<style>
+    .chat-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .chat-header {
+        text-align: center;
+        color: white;
+        margin-bottom: 2rem;
+    }
+
+    .chat-header h2 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .chat-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 250px);
+        min-height: 600px;
+    }
+
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 2rem;
+        background: var(--light);
+    }
+
+    .welcome-message {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: var(--text-light);
+    }
+
+    .welcome-message h3 {
+        color: var(--dark);
+        margin: 1rem 0 0.5rem;
+    }
+
+    .message {
+        margin-bottom: 1.5rem;
+        padding: 1rem 1.25rem;
+        border-radius: 12px;
+        max-width: 85%;
+    }
+
+    .message.user {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        color: white;
+        margin-left: auto;
+        border-bottom-right-radius: 4px;
+    }
+
+    .message.ai {
+        background: white;
+        border: 1px solid var(--border);
+        border-bottom-left-radius: 4px;
+    }
+
+    .message strong {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
+        opacity: 0.9;
+    }
+
+    .message.ai strong {
+        color: var(--primary);
+    }
+
+    .message-content {
+        line-height: 1.6;
+    }
+
+    .sources {
+        margin-top: 1rem;
+        padding: 0.75rem;
+        background: #fef3c7;
+        border: 1px solid #fbbf24;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        color: #92400e;
+    }
+
+    .chat-input-area {
+        padding: 1.5rem;
+        background: white;
+        border-top: 1px solid var(--border);
+    }
+
+    .chat-form {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .chat-input {
+        flex: 1;
+        padding: 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 0.95rem;
+        resize: vertical;
+        min-height: 60px;
+    }
+
+    .chat-input:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+
+    .chat-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .chat-form {
+            flex-direction: column;
+        }
+        .chat-actions {
+            flex-direction: row;
+        }
+        .message {
+            max-width: 95%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="chat-container">
+    <div class="chat-header">
+        <h2>💬 AI Chat Assistant</h2>
+        <p>Ask questions about your documents and get AI-powered answers</p>
+    </div>
+
+    <div class="chat-card">
+        <!-- Chat Messages -->
+        <div class="chat-messages">
+            {% if chat_history %}
+                {% for msg in chat_history %}
+                    <!-- User Message -->
+                    <div class="message user">
+                        <strong>You</strong>
+                        <div class="message-content">{{ msg.question }}</div>
+                    </div>
+                    
+                    <!-- AI Message -->
+                    <div class="message ai">
+                        <strong>AI Assistant</strong>
+                        <div class="message-content">{{ msg.answer }}</div>
+                        {% if msg.source_documents %}
+                        <div class="sources">
+                            📚 <strong>Sources:</strong> Used {{ msg.source_documents|length }} document(s)
+                        </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="welcome-message">
+                    <div style="font-size: 4rem;">💬</div>
+                    <h3>Ask me anything about your documents!</h3>
+                    <p>Upload some documents and start asking questions. I'll search through them and provide accurate answers.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Chat Input -->
+        <div class="chat-input-area">
+            <form action="{{ url_for('ask_question') }}" method="POST" class="chat-form">
+                <textarea 
+                    name="question" 
+                    class="chat-input" 
+                    placeholder="Ask anything about your documents..."
+                    required
+                ></textarea>
+                <div class="chat-actions">
+                    <button type="submit" class="btn btn-primary">
+                        📤 Send
+                    </button>
+                    {% if chat_history %}
+                    <form action="{{ url_for('clear_chat') }}" method="POST" style="display: inline;">
+                        <button type="submit" class="btn btn-secondary" onclick="return confirm('Clear all chat history?');">
+                            🗑️ Clear
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
